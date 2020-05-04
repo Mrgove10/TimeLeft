@@ -10,7 +10,7 @@
 
 // Network details
 const char *ssid = "Livebox-EC80";
-const char *password = "Your password";
+const char *password = "gWbj6RNW6n3mCwwD3A";
 
 int start_hour = 8;
 int start_minute = 30;
