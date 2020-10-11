@@ -24,8 +24,6 @@ LiquidCrystal_I2C lcd(0x27, 20, 4);
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "fr.pool.ntp.org", 3600 * 2);
 
-
-
 /**
  * Calculates the total seconds between the start and stop bounds
  */
@@ -99,9 +97,13 @@ void updateLCD()
 {
     lcd.clear();
     //Line 1
+    lcd.setCursor(0, 0);
     LCD_progress_bar(0, left_seconds, 0, total_seconds);
 
-    //Line 2
+    lcd.setCursor(0, 1);
+    lcd.print("Current: ");
+    lcd.print(timeClient.getFormattedTime());
+    
     lcd.setCursor(0, 3);
     lcd.print("Time Left: ");
     //Hours
@@ -127,11 +129,6 @@ void updateLCD()
     }
     lcd.print(stop_second - timeClient.getSeconds());
 
-    //Line 3
-    lcd.setCursor(0, 1);
-    lcd.print("Current: ");
-    lcd.print(timeClient.getFormattedTime());
-
     //Line 4
     /*
     lcd.setCursor(0, 2);
@@ -144,11 +141,6 @@ void updateLCD()
 void setup()
 {
     Serial.begin(115200);
-
-  Serial.print("hello");
-   // timeClient.begin();
-
-    //total_seconds = calculateTotalSeconds();
 
     lcd.init();
     lcd.backlight();
@@ -163,6 +155,10 @@ void setup()
         delay(1000);
     }
 
+    timeClient.begin();
+
+    total_seconds = calculateTotalSeconds();
+    Serial.println(total_seconds);
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("Wifi connected");
@@ -175,17 +171,21 @@ void setup()
 
 void loop()
 {
-    //timeClient.update();
-    //left_seconds = calculateLeftSeconds();
-    /*if (left_seconds > 0 && left_seconds < total_seconds)
+    timeClient.update();
+    left_seconds = calculateLeftSeconds();
+    Serial.println(left_seconds);
+
+    updateLCD();
+    /*
+    if (left_seconds > 0 && left_seconds < total_seconds)
     {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("lol");
     }
     else
-    {*/
- //   updateLCD();
-    //}
-    delay(2500); //refresh every 2.5 seconds
+    {
+        updateLCD();
+    }*/
+    delay(2500); //refresh
 }
